@@ -1,3 +1,5 @@
+using HotelListing.API.Data;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 namespace HotelListing.API
@@ -8,6 +10,11 @@ namespace HotelListing.API
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            // rb
+            var hotelListingDbConStr = builder.Configuration.GetConnectionString("HotelListingDbConStr");
+            builder.Services.AddDbContext<HotelListingDbContext>(options => {
+                options.UseSqlServer(hotelListingDbConStr);
+            });
             // Add services to the container.
 
             builder.Services.AddControllers();
@@ -15,9 +22,8 @@ namespace HotelListing.API
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            // ----------------------------------------------------------------
             // rb start
-            // ----------------------------------------------------------------
+            // ================================================================
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAll", b => b.AllowAnyHeader()
@@ -31,9 +37,9 @@ namespace HotelListing.API
 
 
 
-            // ----------------------------------------------------------------
+            
             // rb end
-            // ----------------------------------------------------------------
+            // ================================================================
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
