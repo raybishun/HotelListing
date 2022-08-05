@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using HotelListing.API.Data;
+using HotelListing.API.Models.Country;
+using AutoMapper;
 
 namespace HotelListing.API.Controllers
 {
@@ -14,23 +16,26 @@ namespace HotelListing.API.Controllers
     public class CountriesController : ControllerBase
     {
         private readonly HotelListingDbContext _context;
+        private readonly IMapper _mapper;
 
-        public CountriesController(HotelListingDbContext context)
+        public CountriesController(HotelListingDbContext context, IMapper mapper)
         {
             _context = context;
+            this._mapper = mapper;
         }
 
         // GET: api/Countries
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Country>>> GetCountries()
+        public async Task<ActionResult<IEnumerable<GetCountryDto>>> GetCountries()
         {
-            if (_context.Countries == null)
-            {
-                return NotFound();
-            }
+            //if (_context.Countries == null)
+            //{
+            //    return NotFound();
+            //}
 
             var countries = await _context.Countries.ToListAsync();
-            return Ok(countries);
+            var records = _mapper.Map<List<GetCountryDto>>(countries);
+            return Ok(records);
         }
 
         // GET: api/Countries/5
@@ -86,13 +91,23 @@ namespace HotelListing.API.Controllers
         // POST: api/Countries
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Country>> PostCountry(Country country)
+        public async Task<ActionResult<Country>> PostCountry(CreateCountryDto createCountryDto)
         {
-          if (_context.Countries == null)
-          {
-              return Problem("Entity set 'HotelListingDbContext.Countries'  is null.");
-          }
+            //if (_context.Countries == null)
+            //{
+            //    return Problem("Entity set 'HotelListingDbContext.Countries'  is null.");
+            //}
+
+            //var country = new Country
+            //{
+            //    Name = createCountry.Name,
+            //    ShortName = createCountry.ShortName
+            //};
+
+            var country = _mapper.Map<Country>(createCountryDto);
+
             _context.Countries.Add(country);
+
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetCountry", new { id = country.Id }, country);
