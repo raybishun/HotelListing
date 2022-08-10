@@ -42,6 +42,7 @@ namespace HotelListing.API
 
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             builder.Services.AddScoped<ICountriesRepository, CountriesRepository>();
+            builder.Services.AddScoped<IHotelsRepository, HotelsRepository>();
 
             // ================================================================
             var app = builder.Build();
