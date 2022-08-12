@@ -2,6 +2,7 @@ using HotelListing.API.Configurations;
 using HotelListing.API.Contracts;
 using HotelListing.API.Data;
 using HotelListing.API.Repository;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -13,11 +14,23 @@ namespace HotelListing.API
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // rb
+            // ================================================================
+            // rb start 1
+            // ================================================================
             var hotelListingDbConStr = builder.Configuration.GetConnectionString("HotelListingDbConStr");
             builder.Services.AddDbContext<HotelListingDbContext>(options => {
                 options.UseSqlServer(hotelListingDbConStr);
             });
+
+            // Identity
+            builder.Services.AddIdentityCore<ApiUser>()
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<HotelListingDbContext>();
+            // ================================================================
+
+
+
+
             // Add services to the container.
 
             builder.Services.AddControllers();
@@ -25,8 +38,11 @@ namespace HotelListing.API
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+
+            
+
             // ================================================================
-            // rb start
+            // rb start 2
             // ================================================================
             builder.Services.AddCors(options =>
             {
@@ -43,8 +59,9 @@ namespace HotelListing.API
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             builder.Services.AddScoped<ICountriesRepository, CountriesRepository>();
             builder.Services.AddScoped<IHotelsRepository, HotelsRepository>();
-
+            builder.Services.AddScoped<IAuthManager, AuthManager>();
             // ================================================================
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
