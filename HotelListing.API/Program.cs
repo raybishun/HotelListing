@@ -28,7 +28,9 @@ namespace HotelListing.API
             // Identity
             builder.Services.AddIdentityCore<ApiUser>()
                 .AddRoles<IdentityRole>()
-                .AddEntityFrameworkStores<HotelListingDbContext>();
+                .AddTokenProvider<DataProtectorTokenProvider<ApiUser>>("HotelListingApi")
+                .AddEntityFrameworkStores<HotelListingDbContext>()
+                .AddDefaultTokenProviders();
             // ================================================================
 
 
