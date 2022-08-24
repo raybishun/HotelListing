@@ -61,14 +61,24 @@ namespace HotelListing.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> Login([FromBody] LoginDto loginDto)
         {
-            var authResponse = await _authManager.Login(loginDto);
+            _logger.LogInformation($"Login attempted for {loginDto.Email}");
 
-            if (authResponse == null)
+            try
             {
-                return Unauthorized(); // 401
-            }
+                var authResponse = await _authManager.Login(loginDto);
 
-            return Ok(authResponse);
+                if (authResponse == null)
+                {
+                    return Unauthorized(); // 401
+                }
+
+                return Ok(authResponse);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Something went wrong in the {nameof(Login)}");
+                return Problem($"Something went wrong in the {nameof(Login)}", statusCode: 500);
+            }
         }
 
         // POST: api/Account/refreshtoken
