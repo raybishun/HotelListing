@@ -21,7 +21,8 @@ namespace HotelListing.API.Repository
         private const string _loginProvider = "HotelListingApi";
         private const string _refreshToken = "RefreshToken";
 
-        public AuthManager(IMapper mapper, UserManager<ApiUser> userManager, IConfiguration configuration, ILogger logger)
+        public AuthManager(IMapper mapper, UserManager<ApiUser> userManager, IConfiguration configuration, 
+            ILogger<AuthManager> logger)
         {
             this._mapper = mapper;
             this._userManager = userManager;
